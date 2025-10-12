@@ -2,21 +2,23 @@
 !NEW_C4_STYLE=1
 !includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
+'LAYOUT_LEFT_RIGHT()
+LAYOUT_TOP_DOWN()
+
 title Context Diagram fot Bank Standart Online products (MVP)
 
-Person_Ext(user, "Пользователь", "")
-Person_Ext(client, "Клиент", "")
+Person_Ext(client, "Клиент Интернет-банка", "")
+System_Ext(cb_rf, "Центробанк", "")
 
 System_Boundary(bank, "Банк Стандарт") {
-    System(site, "Сайт", "")
-    System(internet_bank, "Интернет-банк", "")
-    Person(operator, "Оператор Колл-центра", "")
+    System(applications, "Приложения", "")
+    Person(operators, "Менеджеры бэк-офиса", "")
+    Rel(operators, applications, "Используют для одобрения депозита")
 }
 
-Rel(user, site, "Выбирает условия по депозиту, заполняет форму обратного звонка", "")
-Rel(client, internet_bank, "Выбирает условия по депозиту, подтверждает заявку", "")
+Rel(client, applications, "Выбирает условия по депозиту, вводит код подтверждения", "")
+Rel(applications, cb_rf, "Запрашивает ключевую ставку")
+Rel(applications, client, "СМС")
 
-Rel(operator, user, "Отрабатывает заявку с формы, подтверждает ставку", "")
-Rel(internet_bank, client, "СМС")
 
 @enduml

@@ -11,7 +11,6 @@ AddRelTag("mvp_rel", $lineColor="green")
 
 title Container Diagram fot Bank Standart Online products (MVP)
 
-Person_Ext(user, "Пользователь", "")
 Person_Ext(client, "Клиент", "")
 System_Ext(credit_bureau, "Бюро кредитных историй")
 System_Ext(cb_rf, "Центробанк")
@@ -20,41 +19,30 @@ Container_Boundary(bank, "Банк Стандарт") {
 Container_Boundary(data_proc_center, "ЦОД") {
     Container(internet_bank, "Интернет-банк", "ASP.NET+MS SQL", "Монолит")
 }
-    Container(site, "Сайт", "PHP+React", "")
     Container(abs, "АБС", "Delphi+Oracle", "Логика на процедурах PL-SQL")
     Container(credit_system, "Кредитный конвейер", "Camunda\Java+Oracle", "")
     Container(scoring_system, "Кредитный скоринг", "Python+PostgreSql", "")
-    Container(call_center, "Система Колл-центр", "Java+PostgreSql+React", "Микросервисы")
 
-    Rel(internet_bank, abs, "БД (платежи)")
     BiRel(credit_system, abs, "Раз в сутки", $tags="async")
-    Rel(scoring_system, abs, "Раз в сутки получает", $tags="async")
+    Rel(scoring_system, abs, "Раз в сутки получает данные", $tags="async")
     Rel(credit_system, scoring_system, "Вызывает по API")
-    Rel(scoring_system, credit_system, "Раз в сутки получает", $tags="async")
-    Rel(abs, call_center, "Читает лиды")
+    Rel(scoring_system, credit_system, "Раз в сутки получает данные", $tags="async")
 
-    Person(operator, "Оператор Колл-центра", "")
     Person(back_office, "Менеджеры бэк-офиса", "")
-    Rel(operator, call_center, "Работает в")
     Rel(back_office, abs, "Работает в")
     Rel(back_office, credit_system, "Работает в")
 
     Container("rate_microservice", "Микросервис Ставок", "PHP+PostgreSql", $tags="mvp")
     Container("leads_microservice", "Микросервис Лидов", "PHP+PostgreSql", $tags="mvp")
 
-    Rel(site, "rate_microservice", "Читает ставки из", "HTTP", $tags="mvp_rel")
     Rel(internet_bank, "rate_microservice", "Читает ставки из", "HTTP", $tags="mvp_rel")
-    Rel(call_center, "rate_microservice", "Читает ставки из", "HTTP", $tags="mvp_rel")
 
-    Rel(site, "leads_microservice", "Отправляет лид", "HTTP", $tags="mvp_rel")
     Rel(internet_bank, "leads_microservice", "Отправляет лид", "HTTP", $tags="mvp_rel")
-    Rel(rate_microservice, "scoring_system", "Предрассчитывает ставки", "", $tags="async, mvp_rel")
+    Rel(rate_microservice, "scoring_system", "Предрассчитывает ставки", "", $tags="mvp_rel")
 }
 
-Rel(user, site, "Выбирает условия по депозиту, заполняет форму обратного звонка", "")
-Rel(client, internet_bank, "Выбирает условия по депозиту, подтверждает заявку", "")
+Rel(client, internet_bank, "Выбирает условия по депозиту, вводит код подтверждения", "", $tags="mvp_rel")
 
-Rel(operator, user, "Отрабатывает заявку с формы, подтверждает ставку", "")
 Rel(leads_microservice, client, "СМС с кодом подтверждения", $tags="mvp_rel")
 
 Rel(scoring_system, credit_bureau, "Получает кред. рейтинг клиента")

@@ -16,13 +16,13 @@ _У вас есть Business Capabilty Map, а также описание ор�
 ### Карта целевого IT-Ландшафта
 ![Target_IT_Landscape](task_1/YaPracticum_BankDigitalTransform_Target_IT_Landscape.jpg)
 
-### Схема технической коммуникации с внешними системами
+### Схема технической коммуникации с внешними системами (исходная система)
 ![AppIntegration_External](task_1/YaPracticum_BankDigitalTransform_AppIntegration_External.jpg)
 
-### Интеграция приложений внутри контура
+### Интеграция приложений внутри контура (исходная система)
 ![AppIntegration_Internal](task_1/YaPracticum_BankDigitalTransform_AppIntegration_Internal.jpg)
 
-### Процесс оформления кредита
+### Процесс оформления кредита (исходная система)
 ![CreditProcess](task_1/YaPracticum_BankDigitalTransform_CreditProcess.jpg)
 
 ## Задание 2. FURPS+ таблица
@@ -34,3 +34,7 @@ _Команда трансформации просит вас обобщить 
 
 [FURPS+](task_2/FURPS+.md)
 
+## Задание 3. Открытие депозитов онлайн
+_Подготовьте схему концептуальной архитектуры открытия депозитов для MVP в формате ADR._
+
+[Deposit ADR](task_3/ADR.md)

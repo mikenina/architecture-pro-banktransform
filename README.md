@@ -47,3 +47,6 @@ _Подготовьте схему концептуальной архитект
 
 MVP Roadmap
 ![MVP Roadmap](task_4/YaPracticum_BankDigitalTransform_Roadmap_MVP.jpg)
+
+## Задание 5. Заявка на кредит онлайн
+[Credit_ADR](task_5/ADR.md)

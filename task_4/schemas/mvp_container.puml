@@ -1,0 +1,35 @@
+@startuml
+!NEW_C4_STYLE=1
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+'LAYOUT_LEFT_RIGHT()
+LAYOUT_TOP_DOWN()
+
+AddElementTag("mvp", $bgColor="black", $fontColor="lightGreen")
+AddRelTag("async", $textColor=$ARROW_FONT_COLOR, $lineColor=$ARROW_COLOR, $lineStyle=DashedLine())
+AddRelTag("mvp_rel", $lineColor="green")
+AddRelTag("mvp_rel_rates", $lineColor="red")
+
+title Container Diagram fot Bank Standart Online products (MVP)
+
+Person_Ext(user1, "Пользователь", "")
+Person_Ext(user2, "Пользователь", "")
+Person_Ext(ext_operator, "Оператор Внешнего Колл-центра", "")
+System_Ext(webdav, "Облако", WebDAV)
+
+Container_Boundary(bank, "Банк Стандарт") {
+    Person(operator, "Оператор Колл-центра", "")
+    Container(scoring_system, "Кредитный скоринг", "Python+PostgreSql", "")
+    Container(call_center, "Система Колл-центр", "Java+PostgreSql+React", "Микросервисы")
+    Container("rate_microservice", "Микросервис Ставок", "PHP+PostgreSql", $tags="mvp")
+    Rel(call_center, rate_microservice, "Получает предрассчитанные общие ставки")
+    Rel(operator, call_center, "Работает в")
+    Rel(rate_microservice, "scoring_system", "Предрассчитывает ставки", "", $tags="async, mvp_rel")
+}
+
+Rel(operator, user1, "Консультирует по общим ставкам. Создает заявку на депозит", "")
+Rel(ext_operator, user2, "Консультирует по общим ставкам", "", $tags="mvp_rel_rates")
+Rel(rate_microservice, webdav, "Передает предрассчитанные общие ставки", "", $tags="mvp_rel_rates+async")
+Rel(ext_operator, webdav, "Забирает предрассчитанные общие ставки", "", $tags="mvp_rel_rates+async")
+
+@enduml

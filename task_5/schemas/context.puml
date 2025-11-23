@@ -1,0 +1,30 @@
+@startuml
+!NEW_C4_STYLE=1
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+'LAYOUT_LEFT_RIGHT()
+LAYOUT_TOP_DOWN()
+
+title Context Diagram fot Bank Standart Online products
+
+Person_Ext(user, "Пользователь с сайта", "")
+Person_Ext(client, "Клиент Интернет-банка", "")
+
+System_Boundary(bank, "Банк Стандарт") {
+    System(applications, "Приложения", "")
+    Person(operator, "Оператор Колл-центра", "")
+    Person(front, "Менеджер в отделении", "")
+    Person(back, "Сотрудник бэк-офиса", "")
+
+    Rel(front, applications, "Имеет доступ к заявкам клиента")
+    Rel(back, applications, "Рассматривает заявки на кредиты")
+}
+
+Rel(user, applications, "Выбирает предложение", "")
+Rel(client, applications, "Выбирает условия, подтверждает заявку", "")
+
+Rel(operator, user, "Подтверждает лид с сайта", "")
+Rel(applications, client, "СМС")
+
+
+@enduml

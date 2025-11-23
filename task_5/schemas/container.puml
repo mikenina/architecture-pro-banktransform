@@ -1,0 +1,65 @@
+@startuml
+!NEW_C4_STYLE=1
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+'LAYOUT_LEFT_RIGHT()
+LAYOUT_TOP_DOWN()
+
+AddElementTag("release", $bgColor="black", $fontColor="lightGreen")
+AddRelTag("async", $textColor=$ARROW_FONT_COLOR, $lineColor=$ARROW_COLOR, $lineStyle=DashedLine())
+AddRelTag("release_rel", $lineColor="green")
+
+title Container Diagram fot Bank Standart Online products
+
+Person_Ext(user, "Пользователь", "")
+Person_Ext(client, "Клиент", "")
+System_Ext(credit_bureau, "Бюро кредитных историй")
+
+Container_Boundary(bank, "Банк Стандарт") {
+    Person(operator, "Оператор Колл-центра", "")
+    Person(front_office, "Менеджер в отделении", "")
+    Person(back_office, "Сотрудник бэк-офиса", "")
+    Container_Boundary(data_proc_center, "ЦОД") {
+        Container(internet_bank, "Интернет-банк", "ASP.NET+MS SQL", "Монолит")
+    }
+    Container(site, "Сайт", "PHP+React", "")
+    Container(abs, "АБС", "Delphi+Oracle", "Логика на процедурах PL-SQL")
+    Container(credit_system, "Кредитный конвейер", "Camunda\Java+Oracle", "")
+    Container(scoring_system, "Кредитный скоринг", "Python+PostgreSql", "")
+    Container(call_center, "Система Колл-центр", "Java+PostgreSql+React", "Микросервисы")
+
+    Container(client_assistance_system, "Платформа сопровождения клиента", "PHP_Postgresql+React", $tags="release")
+
+    BiRel(credit_system, abs, "Раз в сутки", $tags="async")
+    Rel(scoring_system, abs, "Раз в сутки получает", $tags="async")
+    Rel(credit_system, scoring_system, "Вызывает по API")
+
+    Rel(operator, call_center, "Работает в")
+    Rel(back_office, client_assistance_system, "Работает в", $tags="release_rel")
+    Rel(back_office, credit_system, "Работает в")
+    Rel(front_office, client_assistance_system, "Работает в", $tags="release_rel")
+
+'    Container("rate_microservice", "Микросервис Ставок", "PHP+PostgreSql")
+    Container("leads_microservice", "Микросервис Лидов", "PHP+PostgreSql")
+
+    Rel(leads_microservice, client_assistance_system, "Создает заявку", $tags="release_rel")
+    Rel(call_center, client_assistance_system, "Создает заявку", $tags="release_rel")
+
+'    Rel(site, "rate_microservice", "Читает ставки из", "HTTP")
+'    Rel(internet_bank, "rate_microservice", "Читает ставки из", "HTTP")
+'    Rel(call_center, "leads_microservice", "Прозванивает лиды с формы на сайте", "HTTP")
+
+    Rel(site, "leads_microservice", "Отправляет лид", "HTTP")
+    Rel(internet_bank, "leads_microservice", "Отправляет лид", "HTTP")
+'    Rel(rate_microservice, "scoring_system", "Предрассчитывает ставки", "")
+}
+
+Rel(user, site, "Выбирает условия, заполняет форму обратного звонка", "")
+Rel(client, internet_bank, "Выбирает условия, подтверждает заявку", "")
+
+Rel(operator, user, "Отрабатывает лид с формы на сайте", "")
+Rel(leads_microservice, client, "СМС с кодом подтверждения")
+Rel(scoring_system, credit_bureau, "Получает кред. рейтинг клиента")
+
+
+@enduml

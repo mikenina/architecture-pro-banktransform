@@ -1,0 +1,29 @@
+@startuml
+!NEW_C4_STYLE=1
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+'LAYOUT_LEFT_RIGHT()
+LAYOUT_TOP_DOWN()
+
+AddRelTag("async", $textColor=$ARROW_FONT_COLOR, $lineColor=$ARROW_COLOR, $lineStyle=DashedLine())
+AddRelTag("mvp_rel_rates", $lineColor="red")
+
+title Context Diagram fot Bank Standart Online products (MVP)
+
+Person_Ext(user1, "Пользователь", "")
+Person_Ext(user2, "Пользователь", "")
+Person_Ext(ext_operator, "Внешний Колл-центр", "")
+System_Ext(webdav, "Облако", WebDAV)
+
+System_Boundary(bank, "Банк Стандарт") {
+    System(applications, "Приложения", "")
+    Person(operator, "Колл-центр", "")
+    Rel(operator, applications, "Получает предрассчитанные общие ставки")
+}
+
+Rel(operator, user1, "Консультирует по общим ставкам. Создает заявку на депозит", "")
+Rel(ext_operator, user2, "Консультирует по общим ставкам", "", $tags="mvp_rel_rates")
+Rel(applications, webdav, "Передает предрассчитанные общие ставки", "", $tags="mvp_rel_rates+async")
+Rel(ext_operator, webdav, "Забирает предрассчитанные общие ставки", "", $tags="mvp_rel_rates+async")
+
+@enduml
